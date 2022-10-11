@@ -4,7 +4,6 @@ import (
 	"flag"
 	"os"
 	"reflect"
-	"runtime"
 	"strings"
 
 	"github.com/Arvintian/go-utils/cmdutil/pflagenv"
@@ -120,13 +119,6 @@ func InitFlags() {
 
 	flagset := flag.NewFlagSet("klog", flag.ContinueOnError)
 	klog.InitFlags(flagset)
-	// set default flags, enable klog.Set*Ouput to capture logs
-	flagset.Set("alsologtostderr", "true") // nolint:errcheck
-	if runtime.GOOS == "windows" {
-		flagset.Set("log_file", "nul") // nolint:errcheck
-	} else {
-		flagset.Set("log_file", "/dev/null") // nolint:errcheck
-	}
 	AddFlagSetToPFlagSet(flagset, pflag.CommandLine)
 
 	// set flags from environment variables first
@@ -144,9 +136,6 @@ func BindFlags(flags *pflag.FlagSet) {
 
 	// any flags defined by external projects (not part of pflags)
 	AddFlagSetToPFlagSet(flagset, flags)
-	// set default flags, enable klog.Set*Ouput to capture logs
-	flagset.Set("alsologtostderr", "true")
-	flagset.Set("log_file", "/dev/null")
 
 	// Normalize all flags that are coming from other packages or pre-configurations
 	// a.k.a. change all "_" to "-". e.g. glog package
