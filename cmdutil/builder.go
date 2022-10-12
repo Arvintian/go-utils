@@ -72,7 +72,8 @@ func Name(obj interface{}) string {
 }
 
 func Main(cmd *cobra.Command) {
-	flagtools.BindFlags(cmd.Flags())
+	defer klog.Flush()
+	flagtools.BindFlags(cmd.PersistentFlags())
 	ctx := signals.SetupSignalContext()
 	if err := cmd.ExecuteContext(ctx); err != nil {
 		klog.Fatal(err)
